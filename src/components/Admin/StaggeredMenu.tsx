@@ -224,7 +224,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                         ref={toggleBtnRef}
                         onClick={toggleMenu}
                         className={cn(
-                            "h-10 bg-black rounded-full flex items-center justify-center shadow-lg border border-white/10 overflow-hidden",
+                            "h-10 backdrop-blur-sm bg-black/10 rounded-full flex items-center justify-center shadow-lg border border-white/10 overflow-hidden",
                             "transition-shadow hover:shadow-[0_0_15px_rgba(57,255,20,0.3)] w-[80px]"
                         )}
                     >

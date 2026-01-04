@@ -63,7 +63,7 @@ export default function AdminLayout() {
 
             {/* Main Content */}
             <main className="flex-1 overflow-y-auto relative">
-                <div className="p-8 pb-32 md:pb-8">
+                <div className="p-4 pb-32 md:p-8 md:pb-8">
                     <Outlet />
                 </div>
             </main>

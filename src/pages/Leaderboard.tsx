@@ -4,6 +4,7 @@ import DepartmentRow from "../components/Leaderboard/DepartmentRow";
 import QRCodeModal from "../components/Common/QRCodeModal";
 import { Share2 } from "lucide-react";
 import HeroPodium from "../components/Leaderboard/HeroPodium";
+import RecentActivity from "../components/Leaderboard/RecentActivity";
 
 export default function Leaderboard() {
     const { departments } = useAppStore();
@@ -57,6 +58,9 @@ export default function Leaderboard() {
 
             {/* Hero Section */}
             <HeroPodium />
+
+            {/* Recent Activity Section */}
+            <RecentActivity />
 
             {/* Full List */}
             <div className="space-y-4">

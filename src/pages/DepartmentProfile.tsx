@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAppStore } from "../services/store";
 import SupportButton from "../components/Common/SupportButton";
 import { ArrowLeft, Calendar, Trophy } from "lucide-react";
+import RippleGrid from "../components/Common/RippleGrid";
 
 export default function DepartmentProfile() {
     const { id } = useParams<{ id: string }>();
@@ -24,6 +25,15 @@ export default function DepartmentProfile() {
 
             {/* Header Profile */}
             <div className="glass-panel p-8 rounded-3xl relative overflow-hidden flex flex-col md:flex-row items-center gap-8">
+                <div className="absolute inset-0 pointer-events-none opacity-40 mix-blend-overlay">
+                    <RippleGrid
+                        mouseInteraction={false}
+                        opacity={0.6}
+                        gridThickness={0.8}
+                        rippleIntensity={0.5}
+                        gridSize={2}
+                    />
+                </div>
                 <div
                     className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[var(--color-neon-green)]/10 to-transparent rounded-full blur-3xl pointer-events-none"
                 />

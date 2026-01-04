@@ -6,7 +6,7 @@ export default function AdminDashboard() {
 
     const liveGames = games.filter(g => g.status === 'live').length;
     const upcomingGames = games.filter(g => g.status === 'upcoming').length;
-    const completedGames = games.filter(g => g.status === 'completed').length;
+
 
     const stats = [
         { name: "Live Games", value: liveGames.toString(), icon: Activity, color: "text-[var(--color-neon-green)]" },
@@ -52,7 +52,7 @@ export default function AdminDashboard() {
                             <div key={game.id} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
                                 <div className="flex items-center gap-3">
                                     <span className={`w-2 h-2 rounded-full ${game.status === 'live' ? 'bg-[var(--color-neon-green)] animate-pulse' :
-                                            game.status === 'completed' ? 'bg-gray-500' : 'bg-blue-500'
+                                        game.status === 'completed' ? 'bg-gray-500' : 'bg-blue-500'
                                         }`} />
                                     <span className="text-sm">
                                         {deptA?.logo} {deptA?.name} vs {deptB?.logo} {deptB?.name}
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
                                 <div className="flex items-center gap-4">
                                     <span className="font-mono font-bold">{game.scoreA} - {game.scoreB}</span>
                                     <span className={`text-xs uppercase px-2 py-1 rounded ${game.status === 'live' ? 'bg-[var(--color-neon-green)]/20 text-[var(--color-neon-green)]' :
-                                            game.status === 'completed' ? 'bg-gray-500/20 text-gray-400' : 'bg-blue-500/20 text-blue-400'
+                                        game.status === 'completed' ? 'bg-gray-500/20 text-gray-400' : 'bg-blue-500/20 text-blue-400'
                                         }`}>
                                         {game.status}
                                     </span>

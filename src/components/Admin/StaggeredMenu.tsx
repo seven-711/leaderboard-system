@@ -17,7 +17,7 @@ export interface StaggeredMenuProps {
 
 export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     items = [],
-    logoUrl,
+
 }) => {
     const [open, setOpen] = useState(false);
     const openRef = useRef(false);

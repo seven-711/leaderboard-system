@@ -23,7 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         {/* Logo */}
                         <div className="flex-shrink-0 flex items-center gap-2">
                             <Trophy className="h-8 w-8 text-[var(--color-neon-green)] drop-shadow-[0_0_8px_rgba(57,255,20,0.8)]" />
-                            <span className="font-bold text-xl tracking-wider uppercase text-glow">UniLeague</span>
+                            <span className="font-bold text-xl tracking-wider uppercase text-glow">The Zenith</span>
                         </div>
 
                         {/* Desktop Menu */}

@@ -39,24 +39,30 @@ export default function Games() {
     return (
         <div className="space-y-8 animate-fade-in">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-white/10 pb-6">
-                <div>
-                    <h1 className="text-4xl font-bold text-white flex items-center gap-3">
-                        <Trophy className="w-8 h-8 text-[var(--color-neon-green)]" />
-                        Games & Results
-                    </h1>
-                    <p className="text-gray-400 mt-2">Explore the complete match history and upcoming schedule.</p>
+            {/* Header */}
+            <div className="relative glass-panel p-6 md:p-8 rounded-3xl border border-white/10 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+                {/* Background Glow */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-neon-green)]/10 rounded-full blur-[80px] pointer-events-none" />
+
+                <div className="relative z-10 flex items-center gap-4 md:gap-6 w-full md:w-auto">
+                    <div className="p-3 md:p-4 bg-[var(--color-neon-green)]/10 rounded-2xl border border-[var(--color-neon-green)]/20 shadow-[0_0_20px_rgba(57,255,20,0.15)] shrink-0">
+                        <Trophy className="w-8 h-8 md:w-10 md:h-10 text-[var(--color-neon-green)]" />
+                    </div>
+                    <div className="text-left">
+                        <h1 className="text-3xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-gray-400 tracking-tight">Games & Results</h1>
+                        <p className="text-gray-400 font-medium mt-1 text-sm md:text-base">Explore complete match history</p>
+                    </div>
                 </div>
 
                 {/* Search Bar */}
-                <div className="relative w-full md:w-64">
-                    <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-500" />
+                <div className="relative z-10 w-full md:w-72">
+                    <Search className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" />
                     <input
                         type="text"
-                        placeholder="Search teams or sports..."
+                        placeholder="Search teams..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-9 pr-4 text-sm focus:border-[var(--color-neon-green)] focus:outline-none transition-colors"
+                        className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm focus:border-[var(--color-neon-green)] focus:outline-none focus:ring-1 focus:ring-[var(--color-neon-green)] transition-all placeholder:text-gray-600 shadow-inner"
                     />
                 </div>
             </div>

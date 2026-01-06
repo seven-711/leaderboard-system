@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Calendar, Trophy, Settings, LogOut, Users, Building2 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { StaggeredMenu } from "../../components/Admin/StaggeredMenu";

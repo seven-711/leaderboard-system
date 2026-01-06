@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAppStore } from "../../services/store";
-import { PlayCircle, StopCircle, Hash } from "lucide-react";
+import { PlayCircle, StopCircle, Hash, Plus, Minus } from "lucide-react";
 import { type Game } from "../../services/mockData";
 import { cn } from "../../lib/utils";
 
@@ -59,6 +59,22 @@ function GameControlRow({ game }: { game: Game }) {
 
     if (!deptA || !deptB) return null;
 
+    const adjustScore = (team: 'A' | 'B', delta: number) => {
+        let newScoreA = scoreA;
+        let newScoreB = scoreB;
+
+        if (team === 'A') {
+            newScoreA = Math.max(0, scoreA + delta);
+            setScoreA(newScoreA);
+        } else {
+            newScoreB = Math.max(0, scoreB + delta);
+            setScoreB(newScoreB);
+        }
+
+        // Live update via store
+        updateScore(game.id, newScoreA, newScoreB, period, game.gameClock);
+    };
+
     // Determine presets based on game type
     const isBasketball = game.type.toLowerCase().includes('basketball');
     const isVolleyball = game.type.toLowerCase().includes('volleyball');
@@ -93,37 +109,65 @@ function GameControlRow({ game }: { game: Game }) {
 
             {/* Score Controls */}
             <div className="flex flex-col items-center gap-6 w-full max-w-md">
-                <div className="flex items-center justify-center gap-4 md:gap-8 bg-black/20 p-4 md:p-6 rounded-2xl border border-white/5 w-full">
+                <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-8 bg-black/20 p-3 sm:p-4 md:p-6 rounded-2xl border border-white/5 w-full">
                     {/* Team A Score */}
-                    <div className="flex flex-col items-center gap-3">
+                    <div className="flex flex-col items-center gap-2 sm:gap-3">
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="text-2xl">{deptA.logo}</span>
+                            <span className="text-xl sm:text-2xl">{deptA.logo}</span>
                         </div>
-                        <input
-                            type="number"
-                            value={scoreA}
-                            onChange={(e) => { setScoreA(parseInt(e.target.value) || 0); setIsDirty(true); }}
-                            onBlur={handleBlur}
-                            onKeyDown={handleKeyDown}
-                            className="w-24 text-center bg-transparent text-5xl font-black text-white border-b-2 border-white/10 focus:border-[var(--color-neon-green)] focus:outline-none transition-colors"
-                        />
+                        <div className="flex items-center gap-1 sm:gap-3">
+                            <button
+                                onClick={() => adjustScore('A', -1)}
+                                className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                            >
+                                <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </button>
+                            <input
+                                type="number"
+                                value={scoreA}
+                                onChange={(e) => { setScoreA(parseInt(e.target.value) || 0); setIsDirty(true); }}
+                                onBlur={handleBlur}
+                                onKeyDown={handleKeyDown}
+                                className="w-16 sm:w-24 text-center bg-transparent text-3xl sm:text-5xl font-black text-white border-b-2 border-white/10 focus:border-[var(--color-neon-green)] focus:outline-none transition-colors"
+                            />
+                            <button
+                                onClick={() => adjustScore('A', 1)}
+                                className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[var(--color-neon-green)]/10 hover:bg-[var(--color-neon-green)]/20 text-[var(--color-neon-green)] transition-colors"
+                            >
+                                <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="h-16 w-px bg-white/10" />
+                    <div className="h-12 sm:h-16 w-px bg-white/10" />
 
                     {/* Team B Score */}
-                    <div className="flex flex-col items-center gap-3">
+                    <div className="flex flex-col items-center gap-2 sm:gap-3">
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="text-2xl">{deptB.logo}</span>
+                            <span className="text-xl sm:text-2xl">{deptB.logo}</span>
                         </div>
-                        <input
-                            type="number"
-                            value={scoreB}
-                            onChange={(e) => { setScoreB(parseInt(e.target.value) || 0); setIsDirty(true); }}
-                            onBlur={handleBlur}
-                            onKeyDown={handleKeyDown}
-                            className="w-24 text-center bg-transparent text-5xl font-black text-white border-b-2 border-white/10 focus:border-[var(--color-neon-green)] focus:outline-none transition-colors"
-                        />
+                        <div className="flex items-center gap-1 sm:gap-3">
+                            <button
+                                onClick={() => adjustScore('B', -1)}
+                                className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                            >
+                                <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </button>
+                            <input
+                                type="number"
+                                value={scoreB}
+                                onChange={(e) => { setScoreB(parseInt(e.target.value) || 0); setIsDirty(true); }}
+                                onBlur={handleBlur}
+                                onKeyDown={handleKeyDown}
+                                className="w-16 sm:w-24 text-center bg-transparent text-3xl sm:text-5xl font-black text-white border-b-2 border-white/10 focus:border-[var(--color-neon-green)] focus:outline-none transition-colors"
+                            />
+                            <button
+                                onClick={() => adjustScore('B', 1)}
+                                className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-[var(--color-neon-green)]/10 hover:bg-[var(--color-neon-green)]/20 text-[var(--color-neon-green)] transition-colors"
+                            >
+                                <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -193,10 +237,20 @@ function GameControlRow({ game }: { game: Game }) {
 }
 
 export default function ScoreEntry() {
-    const { games, loading } = useAppStore();
+    const { games, loading, currentUser } = useAppStore();
 
     // Only show active or upcoming games
-    const activeGames = games.filter(g => g.status === 'live' || g.status === 'upcoming');
+    // AND filter by assigned sports if not admin
+    const activeGames = games.filter(g => {
+        const isActive = g.status === 'live' || g.status === 'upcoming';
+        if (!isActive) return false;
+
+        if (currentUser?.role === 'admin') return true;
+        // Check if game type matches any assigned sport (case-insensitive partial match)
+        return currentUser?.assignedSports.some(sport =>
+            g.type.toLowerCase().includes(sport.toLowerCase())
+        );
+    });
 
     if (loading) {
         return (

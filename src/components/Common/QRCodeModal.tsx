@@ -1,4 +1,5 @@
 import { X, QrCode } from "lucide-react";
+import QRCode from "react-qr-code";
 
 interface QRCodeModalProps {
     isOpen: boolean;
@@ -8,9 +9,6 @@ interface QRCodeModalProps {
 
 export default function QRCodeModal({ isOpen, onClose, url }: QRCodeModalProps) {
     if (!isOpen) return null;
-
-    // Using a public API for QR code generation to avoid heavy dependencies
-    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}&bgcolor=12-24-38&color=39-255-20`;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
@@ -29,8 +27,14 @@ export default function QRCodeModal({ isOpen, onClose, url }: QRCodeModalProps) 
                     </h3>
 
                     <div className="p-4 bg-white rounded-xl">
-                        {/* QR Server API returns an image. Note: Ideally use a library but this saves deps for now */}
-                        <img src={qrImageUrl} alt="QR Code" className="w-48 h-48" />
+                        <div style={{ height: "auto", margin: "0 auto", maxWidth: 200, width: "100%" }}>
+                            <QRCode
+                                size={256}
+                                style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                                value={url}
+                                viewBox={`0 0 256 256`}
+                            />
+                        </div>
                     </div>
 
                     <p className="text-sm text-gray-400">

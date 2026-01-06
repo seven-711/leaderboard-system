@@ -2,6 +2,13 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { type Department, type Game } from "./mockData";
 import { supabase, type DbDepartment, type DbGame } from "../lib/supabase";
 
+export interface User {
+    id: string;
+    username: string;
+    role: 'admin' | 'delegate';
+    assignedSports: string[];
+}
+
 interface AppState {
     departments: Department[];
     games: Game[];
@@ -18,6 +25,15 @@ interface AppState {
     updateGame: (id: string, game: Partial<Game>) => Promise<void>;
     deleteGame: (id: string) => Promise<void>;
     uploadDepartmentLogo: (file: File) => Promise<string>;
+
+    // User Management
+    users: User[];
+    currentUser: User | null;
+    login: (username: string) => Promise<boolean>;
+    logout: () => void;
+    addUser: (user: Omit<User, 'id'>) => Promise<void>;
+    updateUser: (id: string, updates: Partial<User>) => Promise<void>;
+    deleteUser: (id: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppState | undefined>(undefined);
@@ -220,6 +236,50 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return data.publicUrl;
     };
 
+    // User Management State
+    interface User {
+        id: string;
+        username: string;
+        role: 'admin' | 'delegate';
+        assignedSports: string[];
+    }
+
+    const mockUsers: User[] = [
+        { id: '1', username: 'admin', role: 'admin', assignedSports: [] },
+        { id: '2', username: 'delegate_bball', role: 'delegate', assignedSports: ['Basketball'] },
+        { id: '3', username: 'delegate_vb', role: 'delegate', assignedSports: ['Volleyball'] },
+    ];
+
+    const [users, setUsers] = useState<User[]>(mockUsers);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+    const login = async (username: string) => {
+        // Simple mock login
+        const user = users.find(u => u.username === username);
+        if (user) {
+            setCurrentUser(user);
+            return true;
+        }
+        return false;
+    };
+
+    const logout = () => {
+        setCurrentUser(null);
+    };
+
+    const addUser = async (user: Omit<User, 'id'>) => {
+        const newUser: User = { ...user, id: Math.random().toString(36).substr(2, 9) };
+        setUsers([...users, newUser]);
+    };
+
+    const updateUser = async (id: string, updates: Partial<User>) => {
+        setUsers(users.map(u => u.id === id ? { ...u, ...updates } : u));
+    };
+
+    const deleteUser = async (id: string) => {
+        setUsers(users.filter(u => u.id !== id));
+    };
+
     return (
         <AppContext.Provider value={{
             departments,
@@ -236,6 +296,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             updateGame,
             deleteGame,
             uploadDepartmentLogo,
+            // User Management
+            users,
+            currentUser,
+            login,
+            logout,
+            addUser,
+            updateUser,
+            deleteUser,
         }}>
             {children}
         </AppContext.Provider>
@@ -249,3 +317,5 @@ export const useAppStore = () => {
     }
     return context;
 };
+
+

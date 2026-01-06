@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useAppStore } from "../../services/store";
-import { Plus, Trash2, Edit2, X, Save, Play, Square, Clock } from "lucide-react";
+import { Plus, Trash2, Edit2, Save, Play, Square, Clock } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { type Game } from "../../services/mockData";
 import CustomSelect from "../../components/Common/CustomSelect";
+import Modal from "../../components/Common/Modal";
 
 export default function GameManagement() {
-    const { games, departments, addGame, updateGame, deleteGame, loading } = useAppStore();
+    const { games, departments, addGame, updateGame, deleteGame, loading, currentUser } = useAppStore();
     const [isEditing, setIsEditing] = useState<string | null>(null);
     const [isAdding, setIsAdding] = useState(false);
     const [formData, setFormData] = useState<Omit<Game, 'id'>>({
@@ -103,14 +104,14 @@ export default function GameManagement() {
                 </div>
 
                 {/* Add/Edit Form Modal */}
-                {(isAdding || isEditing) && (
-                    <div className="glass-panel p-6 rounded-xl space-y-4 overflow-visible relative z-50">
-                        <h3 className="text-lg font-bold text-white">
-                            {isEditing ? 'Edit Game' : 'Schedule New Game'}
-                        </h3>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ">
-                            <div>
+                <Modal
+                    isOpen={isAdding || !!isEditing}
+                    onClose={resetForm}
+                    title={isEditing ? 'Edit Game' : 'Schedule New Game'}
+                >
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="sm:col-span-2">
                                 <label className="block text-sm text-gray-400 mb-1">Game Type</label>
                                 <CustomSelect
                                     options={gameTypes}
@@ -164,7 +165,7 @@ export default function GameManagement() {
                                 />
                             </div>
 
-                            <div className="flex items-end gap-2">
+                            <div className="flex items-end gap-2 sm:col-span-2">
                                 <div className="flex-1">
                                     <label className="block text-sm text-gray-400 mb-1">Score A</label>
                                     <input
@@ -187,7 +188,13 @@ export default function GameManagement() {
                             </div>
                         </div>
 
-                        <div className="flex gap-2 pt-4">
+                        <div className="flex gap-2 pt-4 justify-end">
+                            <button
+                                onClick={resetForm}
+                                className="px-4 py-2 bg-white/10 text-white rounded-lg font-bold hover:bg-white/20 transition-colors"
+                            >
+                                Cancel
+                            </button>
                             <button
                                 onClick={handleSave}
                                 className="flex items-center gap-2 px-4 py-2 bg-[var(--color-neon-green)] text-black rounded-lg font-bold hover:bg-[var(--color-neon-green-hover)] transition-colors"
@@ -195,16 +202,9 @@ export default function GameManagement() {
                                 <Save className="w-4 h-4" />
                                 Save
                             </button>
-                            <button
-                                onClick={resetForm}
-                                className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white rounded-lg font-bold hover:bg-white/20 transition-colors"
-                            >
-                                <X className="w-4 h-4" />
-                                Cancel
-                            </button>
                         </div>
                     </div>
-                )}
+                </Modal>
 
                 <div className="glass-panel rounded-xl overflow-x-auto relative z-0">
                     <table className="w-full text-left min-w-[800px]">
@@ -219,96 +219,103 @@ export default function GameManagement() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
-                            {games.map((game) => {
-                                const deptA = departments.find(d => d.id === game.departmentA_id);
-                                const deptB = departments.find(d => d.id === game.departmentB_id);
-                                return (
-                                    <tr key={game.id} className="hover:bg-white/5 transition-colors">
-                                        <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-300">
-                                            {new Date(game.startTime).toLocaleDateString()}
-                                        </td>
-                                        <td className="px-4 py-4 text-sm font-bold whitespace-nowrap">
-                                            {game.type}
-                                        </td>
-                                        <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                            <div className="flex items-center gap-1">
-                                                <span className="text-lg">{deptA?.logo}</span>
-                                                <span className="text-white">{deptA?.name}</span>
-                                                <span className="mx-2 text-gray-500 text-xs">vs</span>
-                                                <span className="text-lg">{deptB?.logo}</span>
-                                                <span className="text-white">{deptB?.name}</span>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-4 text-center">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <div className={cn(
-                                                    "w-10 h-9 flex items-center justify-center rounded bg-black/40 font-mono font-bold text-lg",
-                                                    game.status === 'live' ? "text-[var(--color-neon-green)] border border-[var(--color-neon-green)]/50 shadow-[0_0_10px_rgba(57,255,20,0.2)]" : "text-white border border-white/10"
-                                                )}>
-                                                    {game.scoreA}
+                            {games
+                                .filter(g => {
+                                    if (currentUser?.role === 'admin') return true;
+                                    return currentUser?.assignedSports.some(sport =>
+                                        g.type.toLowerCase().includes(sport.toLowerCase())
+                                    );
+                                })
+                                .map((game) => {
+                                    const deptA = departments.find(d => d.id === game.departmentA_id);
+                                    const deptB = departments.find(d => d.id === game.departmentB_id);
+                                    return (
+                                        <tr key={game.id} className="hover:bg-white/5 transition-colors">
+                                            <td className="px-4 py-4 text-sm whitespace-nowrap text-gray-300">
+                                                {new Date(game.startTime).toLocaleDateString()}
+                                            </td>
+                                            <td className="px-4 py-4 text-sm font-bold whitespace-nowrap">
+                                                {game.type}
+                                            </td>
+                                            <td className="px-4 py-4 text-sm whitespace-nowrap">
+                                                <div className="flex items-center gap-1">
+                                                    <span className="text-lg">{deptA?.logo}</span>
+                                                    <span className="text-white">{deptA?.name}</span>
+                                                    <span className="mx-2 text-gray-500 text-xs">vs</span>
+                                                    <span className="text-lg">{deptB?.logo}</span>
+                                                    <span className="text-white">{deptB?.name}</span>
                                                 </div>
-                                                <span className="text-gray-600 font-bold text-xs">-</span>
-                                                <div className={cn(
-                                                    "w-10 h-9 flex items-center justify-center rounded bg-black/40 font-mono font-bold text-lg",
-                                                    game.status === 'live' ? "text-[var(--color-neon-green)] border border-[var(--color-neon-green)]/50 shadow-[0_0_10px_rgba(57,255,20,0.2)]" : "text-white border border-white/10"
-                                                )}>
-                                                    {game.scoreB}
+                                            </td>
+                                            <td className="px-4 py-4 text-center">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <div className={cn(
+                                                        "w-10 h-9 flex items-center justify-center rounded bg-black/40 font-mono font-bold text-lg",
+                                                        game.status === 'live' ? "text-[var(--color-neon-green)] border border-[var(--color-neon-green)]/50 shadow-[0_0_10px_rgba(57,255,20,0.2)]" : "text-white border border-white/10"
+                                                    )}>
+                                                        {game.scoreA}
+                                                    </div>
+                                                    <span className="text-gray-600 font-bold text-xs">-</span>
+                                                    <div className={cn(
+                                                        "w-10 h-9 flex items-center justify-center rounded bg-black/40 font-mono font-bold text-lg",
+                                                        game.status === 'live' ? "text-[var(--color-neon-green)] border border-[var(--color-neon-green)]/50 shadow-[0_0_10px_rgba(57,255,20,0.2)]" : "text-white border border-white/10"
+                                                    )}>
+                                                        {game.scoreB}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap text-center">
-                                            <div className="flex items-center justify-center gap-1">
-                                                <button
-                                                    onClick={() => handleStatusChange(game.id, 'upcoming')}
-                                                    className={cn(
-                                                        "p-1.5 rounded transition-colors",
-                                                        game.status === 'upcoming' ? 'bg-blue-500/30 text-blue-400' : 'hover:bg-white/10 text-gray-500'
-                                                    )}
-                                                    title="Upcoming"
-                                                >
-                                                    <Clock className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleStatusChange(game.id, 'live')}
-                                                    className={cn(
-                                                        "p-1.5 rounded transition-colors",
-                                                        game.status === 'live' ? 'bg-red-500/30 text-red-400' : 'hover:bg-white/10 text-gray-500'
-                                                    )}
-                                                    title="Live"
-                                                >
-                                                    <Play className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleStatusChange(game.id, 'completed')}
-                                                    className={cn(
-                                                        "p-1.5 rounded transition-colors",
-                                                        game.status === 'completed' ? 'bg-gray-500/30 text-gray-400' : 'hover:bg-white/10 text-gray-500'
-                                                    )}
-                                                    title="Final"
-                                                >
-                                                    <Square className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-4 whitespace-nowrap text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button
-                                                    onClick={() => handleEdit(game)}
-                                                    className="p-2 hover:bg-white/10 rounded-full transition-colors text-blue-400"
-                                                >
-                                                    <Edit2 className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(game.id)}
-                                                    className="p-2 hover:bg-white/10 rounded-full transition-colors text-red-400"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap text-center">
+                                                <div className="flex items-center justify-center gap-1">
+                                                    <button
+                                                        onClick={() => handleStatusChange(game.id, 'upcoming')}
+                                                        className={cn(
+                                                            "p-1.5 rounded transition-colors",
+                                                            game.status === 'upcoming' ? 'bg-blue-500/30 text-blue-400' : 'hover:bg-white/10 text-gray-500'
+                                                        )}
+                                                        title="Upcoming"
+                                                    >
+                                                        <Clock className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleStatusChange(game.id, 'live')}
+                                                        className={cn(
+                                                            "p-1.5 rounded transition-colors",
+                                                            game.status === 'live' ? 'bg-red-500/30 text-red-400' : 'hover:bg-white/10 text-gray-500'
+                                                        )}
+                                                        title="Live"
+                                                    >
+                                                        <Play className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleStatusChange(game.id, 'completed')}
+                                                        className={cn(
+                                                            "p-1.5 rounded transition-colors",
+                                                            game.status === 'completed' ? 'bg-gray-500/30 text-gray-400' : 'hover:bg-white/10 text-gray-500'
+                                                        )}
+                                                        title="Final"
+                                                    >
+                                                        <Square className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-4 whitespace-nowrap text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <button
+                                                        onClick={() => handleEdit(game)}
+                                                        className="p-2 hover:bg-white/10 rounded-full transition-colors text-blue-400"
+                                                    >
+                                                        <Edit2 className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(game.id)}
+                                                        className="p-2 hover:bg-white/10 rounded-full transition-colors text-red-400"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
                             {games.length === 0 && (
                                 <tr>
                                     <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
@@ -322,20 +329,22 @@ export default function GameManagement() {
             </div>
 
             {/* Floating Action Button - Dynamic Island Style */}
-            <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-fade-in-up">
-                <button
-                    onClick={() => {
-                        resetForm();
-                        setIsAdding(true);
-                    }}
-                    className="group flex items-center gap-3 pl-2 pr-6 py-2 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all hover:scale-105 hover:border-[var(--color-neon-green)]/30 hover:shadow-[0_8px_32px_rgba(57,255,20,0.15)]"
-                >
-                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--color-neon-green)] text-black shadow-lg shadow-[var(--color-neon-green)]/20 group-hover:scale-110 transition-transform">
-                        <Plus className="w-6 h-6" />
-                    </div>
-                    <span className="font-bold text-white text-xs tracking-wide group-hover:text-[var(--color-neon-green)] transition-colors">Schedule Game</span>
-                </button>
-            </div>
+            {(!isAdding && !isEditing) && (
+                <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-fade-in-up">
+                    <button
+                        onClick={() => {
+                            resetForm();
+                            setIsAdding(true);
+                        }}
+                        className="group flex items-center gap-3 pl-2 pr-6 py-2 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all hover:scale-105 hover:border-[var(--color-neon-green)]/30 hover:shadow-[0_8px_32px_rgba(57,255,20,0.15)]"
+                    >
+                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--color-neon-green)] text-black shadow-lg shadow-[var(--color-neon-green)]/20 group-hover:scale-110 transition-transform">
+                            <Plus className="w-6 h-6" />
+                        </div>
+                        <span className="font-bold text-white text-xs tracking-wide group-hover:text-[var(--color-neon-green)] transition-colors">Schedule Game</span>
+                    </button>
+                </div>
+            )}
         </>
     );
 }

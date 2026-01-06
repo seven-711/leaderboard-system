@@ -22,6 +22,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-grab": "^0.0.98",
+    "react-qr-code": "^2.0.18",
     "react-router-dom": "^7.11.0",
     "tailwind-merge": "^3.4.0",
     "three": "^0.182.0"

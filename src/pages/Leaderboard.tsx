@@ -8,7 +8,7 @@ import RecentActivity from "../components/Leaderboard/RecentActivity";
 
 export default function Leaderboard() {
     const { departments } = useAppStore();
-    const [timeFilter, setTimeFilter] = useState("overall");
+    const [timeFilter, setTimeFilter] = useState("1st Day");
     const [isQRModalOpen, setIsQRModalOpen] = useState(false);
 
     // Sort departments by points
@@ -40,7 +40,7 @@ export default function Leaderboard() {
 
                     {/* Filters */}
                     <div className="flex items-center gap-2 p-1 rounded-lg bg-white/5 border border-white/10">
-                        {["overall", "weekly", "daily"].map((filter) => (
+                        {["1st Day", "2nd Day", "3rd Day"].map((filter) => (
                             <button
                                 key={filter}
                                 onClick={() => setTimeFilter(filter)}
@@ -49,7 +49,7 @@ export default function Leaderboard() {
                                     : "text-gray-400 hover:text-white"
                                     }`}
                             >
-                                {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                                {filter}
                             </button>
                         ))}
                     </div>

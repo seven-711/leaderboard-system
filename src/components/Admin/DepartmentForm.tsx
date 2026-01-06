@@ -246,7 +246,7 @@ export default function DepartmentForm() {
             </Modal>
 
             {/* Floating Action Button - Dynamic Island Style */}
-            <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 animate-fade-in-up">
+            <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] animate-fade-in-up">
                 <button
                     onClick={() => setIsAdding(true)}
                     className="group flex items-center gap-3 pl-2 pr-6 py-2 bg-black/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all hover:scale-105 hover:border-[var(--color-neon-green)]/30 hover:shadow-[0_8px_32px_rgba(57,255,20,0.15)]"

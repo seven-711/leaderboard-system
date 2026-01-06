@@ -202,7 +202,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     };
 
     return (
-        <div className={`sm-scope fixed top-0 left-0 w-full h-0 z-50`}>
+        <div className={`sm-scope fixed top-0 left-0 w-full h-0 z-[100]`}>
             <div className={`staggered-menu-wrapper pointer-events-none relative w-full h-screen`}
                 style={{ ['--sm-accent' as any]: accentColor } as React.CSSProperties}
             >
@@ -218,8 +218,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
 
 
-                {/* Dynamic Island Trigger */}
-                <div className="absolute top-4 right-6 z-[60] pointer-events-auto">
+                <div className="absolute top-4 right-6 z-[101] pointer-events-auto">
                     <button
                         ref={toggleBtnRef}
                         onClick={toggleMenu}

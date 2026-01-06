@@ -45,8 +45,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                     </Link>
                                 ))}
                                 {/* Admin Link (Hidden or subtle) */}
-                                <Link to="/admin" className="text-gray-500 hover:text-gray-300 text-xs uppercase tracking-widest ml-4">
-                                    Admin
+                                <Link to="/login" className="text-gray-500 hover:text-gray-300 text-xs uppercase tracking-widest ml-4">
+                                    Login
                                 </Link>
                             </div>
                         </div>
@@ -83,10 +83,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                                     {item.name}
                                 </Link>
                             ))}
-                            <Link to="/admin"
+                            <Link to="/login"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="block px-3 py-3 text-gray-500 hover:text-gray-300 text-sm">
-                                Admin Dashboard
+                                Login
                             </Link>
                         </div>
                     </div>

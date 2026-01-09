@@ -1,6 +1,6 @@
 
 import { useAppStore } from "../../services/store";
-import { CheckCircle2, Calendar } from "lucide-react";
+import { Calendar } from "lucide-react";
 
 export default function RecentActivity() {
     const { games, departments } = useAppStore();
@@ -15,10 +15,7 @@ export default function RecentActivity() {
 
     return (
         <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-300 border-b border-white/10 pb-2 mb-4 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-[var(--color-neon-green)]" />
-                Recent Activity
-            </h2>
+
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {recentGames.map(game => {
                     const deptA = departments.find(d => d.id === game.departmentA_id);

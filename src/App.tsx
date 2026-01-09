@@ -4,6 +4,7 @@ import Layout from "./components/Layout/Layout";
 import Leaderboard from "./pages/Leaderboard"; // Real Page
 import DepartmentProfile from "./pages/DepartmentProfile"; // Real Page
 import LiveFeed from "./pages/LiveFeed"; // Real Page
+import Recent from "./pages/Recent"; // Real Page
 import Games from "./pages/Games";
 import Departments from "./pages/Departments"; // Real Page
 import Login from "./pages/Login";
@@ -33,6 +34,7 @@ function App() {
             {/* Public Routes with Layout */}
             <Route path="/" element={<Layout><Leaderboard /></Layout>} />
             <Route path="/live" element={<Layout><LiveFeed /></Layout>} />
+            <Route path="/recent" element={<Layout><Recent /></Layout>} />
             <Route path="/games" element={<Layout><Games /></Layout>} />
             <Route path="/departments" element={<Layout><Departments /></Layout>} />
             <Route path="/department/:id" element={<Layout><DepartmentProfile /></Layout>} />

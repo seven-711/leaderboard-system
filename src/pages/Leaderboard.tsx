@@ -3,7 +3,7 @@ import { useAppStore } from "../services/store";
 import DepartmentRow from "../components/Leaderboard/DepartmentRow";
 import { Trophy } from "lucide-react";
 import HeroPodium from "../components/Leaderboard/HeroPodium";
-import RecentActivity from "../components/Leaderboard/RecentActivity";
+
 import QRCode from "react-qr-code";
 
 export default function Leaderboard() {
@@ -23,8 +23,7 @@ export default function Leaderboard() {
             {/* Hero Section */}
             <HeroPodium />
 
-            {/* Recent Activity Section */}
-            <RecentActivity />
+
 
             {/* Full List */}
             <div className="space-y-4">

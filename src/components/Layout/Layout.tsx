@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Trophy, Calendar, Activity, Users, Menu, X } from "lucide-react"; // Icons
+import { Trophy, Calendar, Activity, Users, Menu, X, Clock } from "lucide-react"; // Icons
 import { useState } from "react";
 import { cn } from "../../lib/utils";
 
@@ -10,6 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const navItems = [
         { name: "Leaderboard", path: "/", icon: Trophy },
         { name: "Live Feed", path: "/live", icon: Activity },
+        { name: "Recent", path: "/recent", icon: Clock },
         { name: "Games", path: "/games", icon: Calendar },
         { name: "Departments", path: "/departments", icon: Users },
     ];
